@@ -35,12 +35,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BitConverter.cs" />
+    <Compile Include="CommandStream.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\PowerOff.cs" />
+    <Compile Include="Commands\PowerOn.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Fallible.cs" />
+    <Compile Include="Option.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="PacketFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IscpStream.cs" />
+    <Compile Include="IDevice.cs" />
+    <Compile Include="Common\PowerState.cs" />
+    <Compile Include="Responses\IFactory.cs" />
+    <Compile Include="Responses\IResponse.cs" />
+    <Compile Include="Responses\Parser.cs" />
+    <Compile Include="Responses\PowerState.cs" />
+    <Compile Include="TxNr\Receiver.cs" />
+    <Compile Include="TxNr\Zone.cs" />
+    <Compile Include="TxNr\Zone1.cs" />
+    <Compile Include="TxNr\Zone2.cs" />
+    <Compile Include="TxNr\Zone3.cs" />
     <Compile Include="UnitType.cs" />
     <Compile Include="UsingDisposable.cs" />
     <Compile Include="RefCountDisposable.cs" />
@@ -68,6 +85,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

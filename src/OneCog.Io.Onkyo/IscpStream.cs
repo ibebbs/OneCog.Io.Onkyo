@@ -12,7 +12,14 @@ using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo
 {
-    public class IscpStream : ISubject<IPacket>
+    public interface IIscpStream : IObservable<IPacket>
+    {
+        IDisposable Connect();
+
+        void Send(IPacket packet);
+    }
+
+    public class IscpStream : IIscpStream, IObserver<IPacket>
     {
         private const string Header = "ISCP";
 
@@ -35,7 +42,7 @@ namespace OneCog.Io.Onkyo
             _outbound = new Subject<IPacket>();
 
             _input = Observable.Using(ct => _tcpClient.GetDataReader(hostName, port), (reader, ct) => FromDataReader(reader)).Publish();
-            _output = Observable.Using(ct => _tcpClient.GetDataWriter(hostName, port), (reader, ct) => FromDataWriter(reader)).Publish();
+            _output = Observable.Using(ct => _tcpClient.GetDataWriter(hostName, port), (writer, ct) => FromDataWriter(writer)).Publish();
 
             _subscription = new SharedDisposable(
                 () => new CompositeDisposable(
@@ -125,6 +132,11 @@ namespace OneCog.Io.Onkyo
             var disposable = _subscription.GetDisposable();
 
             return disposable;
+        }
+
+        public void Send(IPacket packet)
+        {
+            _outbound.OnNext(packet);
         }
     }
 }

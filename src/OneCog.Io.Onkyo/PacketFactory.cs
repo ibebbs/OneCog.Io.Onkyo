@@ -12,6 +12,7 @@ namespace OneCog.Io.Onkyo
         Stream CreateIscpStream(UnitType unitType, string command);
         Stream CreateIscpStream(UnitType unitType, IEnumerable<string> commands);
         IPacket CreatePacket(UnitType unitType, string command);
+        string ExtractBody(IPacket packet);
     }
 
     public class PacketFactory : IPacketFactory
@@ -71,6 +72,11 @@ namespace OneCog.Io.Onkyo
             byte[] buffer = CreateIscpBuffer(unitType, command);
 
             return new Packet(16, (uint) buffer.Length, 1, buffer);
+        }
+        
+        public string ExtractBody(IPacket packet)
+        {
+            return Encoding.GetString(packet.Data, (int) packet.HeaderSize, (int) packet.DataSize - (int) packet.HeaderSize);
         }
     }
 }
