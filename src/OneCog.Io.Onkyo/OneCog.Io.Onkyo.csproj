@@ -59,7 +59,7 @@
     <Compile Include="TxNr\Zone2.cs" />
     <Compile Include="TxNr\Zone3.cs" />
     <Compile Include="UnitType.cs" />
-    <Compile Include="UsingDisposable.cs" />
+    <Compile Include="SharedDisposable.cs" />
     <Compile Include="RefCountDisposable.cs" />
   </ItemGroup>
   <ItemGroup>
