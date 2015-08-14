@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Responses
 {
-    public interface IFactory
+    public interface IParser
     {
         string Regex { get; }
 

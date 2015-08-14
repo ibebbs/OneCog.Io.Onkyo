@@ -8,21 +8,19 @@ using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Responses
 {
-    public interface IParser
+    public interface IAbstractParser
     {
         IEnumerable<IResponse> Parse(string response);
     }
 
-    public class Parser
+    public class AbstractParser : IAbstractParser
     {
-        private const string MasterVolumeRegex = @"(?<MVL>MVL(?<MVLVALUE>([0..9,A..F]){2}))";
-
-        private readonly IEnumerable<IFactory> _factories;
+        private readonly IEnumerable<IParser> _factories;
         private readonly Regex _regex;
 
-        public Parser(IEnumerable<IFactory> factories)
+        public AbstractParser(IEnumerable<IParser> factories)
         {
-            _factories = (factories ?? Enumerable.Empty<IFactory>()).ToArray();
+            _factories = (factories ?? Enumerable.Empty<IParser>()).ToArray();
 
             string regexPattern = string.Format(@"!({0})", string.Join("|", _factories.Select(factory => factory.Regex)).ToArray());
 

@@ -24,7 +24,7 @@ namespace OneCog.Io.Onkyo
         private readonly IObservable<IResponse> _responses;
         private readonly TimeSpan _commandTimeout;
 
-        public CommandStream(IIscpStream stream, IPacketFactory packetFactory, IParser parser, UnitType unitType, TimeSpan commandTimeout)
+        public CommandStream(IIscpStream stream, IPacketFactory packetFactory, IAbstractParser parser, UnitType unitType, TimeSpan commandTimeout)
         {
             _stream = stream;
             _packetFactory = packetFactory;

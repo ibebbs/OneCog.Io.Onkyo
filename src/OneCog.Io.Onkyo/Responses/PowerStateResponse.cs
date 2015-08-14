@@ -18,7 +18,7 @@ namespace OneCog.Io.Onkyo.Responses
         public PowerState PowerState { get; private set; }
     }
 
-    public class PowerStateFactory : IFactory
+    public class PowerStateParser : IParser
     {
         private static readonly IReadOnlyDictionary<string, PowerState> PowerStates = new Dictionary<string, PowerState>
         {

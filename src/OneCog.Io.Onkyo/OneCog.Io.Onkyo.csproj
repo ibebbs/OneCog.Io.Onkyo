@@ -39,6 +39,8 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\PowerOff.cs" />
     <Compile Include="Commands\PowerOn.cs" />
+    <Compile Include="Commands\GetMasterVolume.cs" />
+    <Compile Include="Commands\SetMasterVolume.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Fallible.cs" />
@@ -49,10 +51,11 @@
     <Compile Include="IscpStream.cs" />
     <Compile Include="IDevice.cs" />
     <Compile Include="Common\PowerState.cs" />
-    <Compile Include="Responses\IFactory.cs" />
+    <Compile Include="Responses\IParser.cs" />
     <Compile Include="Responses\IResponse.cs" />
-    <Compile Include="Responses\Parser.cs" />
-    <Compile Include="Responses\PowerState.cs" />
+    <Compile Include="Responses\AbstractParser.cs" />
+    <Compile Include="Responses\PowerStateResponse.cs" />
+    <Compile Include="Responses\VolumeResponse.cs" />
     <Compile Include="TxNr\Receiver.cs" />
     <Compile Include="TxNr\Zone.cs" />
     <Compile Include="TxNr\Zone1.cs" />
