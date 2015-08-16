@@ -13,6 +13,7 @@
     <description>Open source, portable library from interacting with Onkyo home cinema devices via eICSP protocol</description>
     <copyright>Copyright 2015</copyright>
     <tags>Onkyo eISCP portable</tags>
+    @dependencies@
   </metadata>
   @files@
 </package>

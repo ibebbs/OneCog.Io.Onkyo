@@ -49,6 +49,10 @@ Target "Package" (fun _ ->
     let portableFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, portableTarget)), None))
     let uapFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, uapTarget)), None))
 
+    let dependencies = getDependencies "./src/OneCog.Io.Onkyo/packages.config" |> List.filter (fun (name, version) -> name <> "FAKE")
+
+    printfn "%A" dependencies
+
     NuGet (fun p -> 
         {p with
             Authors = [ "Ian Bebbington" ]
@@ -60,6 +64,8 @@ Target "Package" (fun _ ->
             OutputPath = deployDir
             WorkingDir = deployDir
             Version = version
+            Dependencies = dependencies
+            //DependenciesByFramework = [ { FrameworkVersion = portableTarget; Dependencies = dependencies }; { FrameworkVersion = uapTarget; Dependencies = dependencies } ]
             Files = portableFiles @ uapFiles
             Publish = false }) 
             "./OneCog.Io.Onkyo.nuspec"
