@@ -17,7 +17,7 @@ namespace OneCog.Io.Onkyo.Tests
         private static readonly byte Eof = 16;
         private static readonly byte Version = 1;
         private static readonly byte[] Padding = new byte[3];
-        private static readonly byte[] VersionPadding = new byte[] { Version, 0, 0, 0 };
+        private static readonly byte[] PaddedVersion = new byte[] { Version, 0, 0, 0 };
 
         [Test]
         public void ConnectToTcpClientWhenConnectIsCalled()
@@ -124,8 +124,8 @@ namespace OneCog.Io.Onkyo.Tests
             byte[] header = new byte[16];
             Array.Copy(ASCIIEncoding.ASCII.GetBytes("ISCP"), 0, header, 0, 4);
             Array.Copy(BitConverter.BigEndian.GetBytes((UInt32)16), 0, header, 4, 4);
-            Array.Copy(BitConverter.BigEndian.GetBytes((UInt32)data.Length + 16), 0, header, 8, 4);
-            Array.Copy(VersionPadding, 0, header, 4, 4);
+            Array.Copy(BitConverter.BigEndian.GetBytes((UInt32)data.Length), 0, header, 8, 4);
+            Array.Copy(PaddedVersion, 0, header, 12, 4);
 
             return header.Concat(data);
         }
