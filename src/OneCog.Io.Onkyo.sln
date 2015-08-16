@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneCog.Io.Onkyo", "OneCog.Io.Onkyo\OneCog.Io.Onkyo.csproj", "{5A1FB3C3-2C4D-4D33-8C52-FCEB4FCFEF41}"
 EndProject
@@ -10,6 +10,17 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneCog.Io.Onkyo.Console", "OneCog.Io.Onkyo.Console\OneCog.Io.Onkyo.Console.csproj", "{458EBFA2-1623-4A7C-A0EA-28557767013A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneCog.Io.Onkyo.Receiver", "OneCog.Io.Onkyo.Receiver\OneCog.Io.Onkyo.Receiver.csproj", "{A38D546C-2294-413B-9F16-B9B0AF9CDC73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F5B33C3C-1BDA-4F5C-8549-59F577B53B36}"
+	ProjectSection(SolutionItems) = preProject
+		..\build.bat = ..\build.bat
+		..\build.fsx = ..\build.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{70588C19-C706-4DCA-92FB-A21349E8936D}"
+	ProjectSection(SolutionItems) = preProject
+		..\OneCog.Io.Onkyo.nuspec = ..\OneCog.Io.Onkyo.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

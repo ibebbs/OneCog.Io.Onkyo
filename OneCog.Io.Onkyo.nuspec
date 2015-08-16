@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>OneCog.Io.Onkyo</id>
+    <version>$version$</version>
+    <title>OneCog.Io.Onkyo</title>
+    <authors>OneCog</authors>
+    <owners>OneCog</owners>
+    <licenseUrl>https://github.com/ibebbs/OneCog.Io.Onkyo</licenseUrl>
+    <projectUrl>https://github.com/ibebbs/OneCog.Io.Onkyo/blob/master/LICENSE</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/ibebbs/OneCog.Io.Onkyo/master/Onkyo-logo.jpg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Open source, portable library from interacting with Onkyo home cinema devices via eICSP protocol</description>
+    <copyright>Copyright 2015</copyright>
+    <tags>Onkyo eISCP portable</tags>
+  </metadata>
+  @files@
+</package>
