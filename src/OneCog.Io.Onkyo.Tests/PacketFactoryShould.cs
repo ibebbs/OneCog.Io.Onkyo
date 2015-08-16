@@ -15,11 +15,11 @@ namespace OneCog.Io.Onkyo.Tests
         {
             byte[] expected = new byte [] {
                 (byte)'I', (byte)'S', (byte)'C', (byte)'P',
-                16, 0, 0, 0,
-                24, 0, 0, 0,
+                0, 0, 0, 16,
+                0, 0, 0, 14,
                 1, 0, 0, 0,
                 (byte)'!', (byte)'1',(byte)'P',(byte)'W',
-                (byte)'R', (byte)'0', (byte)'1', 16
+                (byte)'R', (byte)'0', (byte)'1', 13
             };
 
             byte[] actual = PacketFactory.Default.CreateIscpBuffer(UnitType.Receiver, "PWR01");
