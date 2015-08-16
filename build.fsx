@@ -19,7 +19,8 @@ let description = "Open source, portable library from interacting with Onkyo hom
 let portableAssemblies = [ "OneCog.Io.Onkyo.dll"; "OneCog.Io.Onkyo.pdb"; ]
 
 let libDir = "lib"
-let target = "portable-win81+wpa81+net45+uap10.0"
+let portableTarget = "portable-win81+wpa81+net45+uap10.0"
+let uapTarget = "uap"
  
 // Targets
 Target "Clean" (fun _ ->
@@ -45,7 +46,8 @@ Target "Package" (fun _ ->
 
     portableAssemblies |> List.map(fun a -> buildDir @@ a) |> CopyFiles deployDir  
 
-    let targetFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, target)), None))
+    let portableFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, portableTarget)), None))
+    let uapFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, uapTarget)), None))
 
     NuGet (fun p -> 
         {p with
@@ -58,7 +60,7 @@ Target "Package" (fun _ ->
             OutputPath = deployDir
             WorkingDir = deployDir
             Version = version
-            Files = targetFiles
+            Files = portableFiles @ uapFiles
             Publish = false }) 
             "./OneCog.Io.Onkyo.nuspec"
 )
