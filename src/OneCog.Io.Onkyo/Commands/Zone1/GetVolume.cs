@@ -1,10 +1,10 @@
-﻿using OneCog.Io.Onkyo.Responses;
+﻿using OneCog.Io.Onkyo.Responses.Zone1;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Commands
+namespace OneCog.Io.Onkyo.Commands.Zone1
 {
-    public class GetMasterVolume : ICommand<byte>
+    public class GetVolume : ICommand<byte>
     {
         private const string CommandString = "MVLQSTN";
 
