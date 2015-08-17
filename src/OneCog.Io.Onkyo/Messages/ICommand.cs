@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Responses
+namespace OneCog.Io.Onkyo.Messages
 {
-    public interface IResponse
+    public interface ICommand<T>
     {
+        Task<Fallible<T>> Send(ICommandStream stream);
     }
 }

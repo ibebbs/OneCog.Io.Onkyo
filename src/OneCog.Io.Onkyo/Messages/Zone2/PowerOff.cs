@@ -1,9 +1,8 @@
 ﻿using OneCog.Io.Onkyo.Common;
-using OneCog.Io.Onkyo.Responses.Zone2;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Commands.Zone2
+namespace OneCog.Io.Onkyo.Messages.Zone2
 {
     public class PowerOff : ICommand<PowerState>
     {

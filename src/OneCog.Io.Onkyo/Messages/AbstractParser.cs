@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Responses
+namespace OneCog.Io.Onkyo.Messages
 {
     public interface IAbstractParser
     {

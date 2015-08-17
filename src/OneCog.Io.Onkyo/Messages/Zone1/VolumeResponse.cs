@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace OneCog.Io.Onkyo.Responses.Zone1
+namespace OneCog.Io.Onkyo.Messages.Zone1
 {
     public class VolumeResponse : IResponse
     {

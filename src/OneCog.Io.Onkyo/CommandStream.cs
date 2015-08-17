@@ -1,5 +1,4 @@
-﻿using OneCog.Io.Onkyo.Commands;
-using OneCog.Io.Onkyo.Responses;
+﻿using OneCog.Io.Onkyo.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -38,15 +38,15 @@
   <ItemGroup>
     <Compile Include="BitConverter.cs" />
     <Compile Include="CommandStream.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\Zone1\PowerOff.cs" />
-    <Compile Include="Commands\Zone1\PowerOn.cs" />
-    <Compile Include="Commands\Zone1\GetVolume.cs" />
-    <Compile Include="Commands\Zone1\SetVolume.cs" />
-    <Compile Include="Commands\Zone2\GetVolume.cs" />
-    <Compile Include="Commands\Zone2\PowerOff.cs" />
-    <Compile Include="Commands\Zone2\PowerOn.cs" />
-    <Compile Include="Commands\Zone2\SetVolume.cs" />
+    <Compile Include="Messages\ICommand.cs" />
+    <Compile Include="Messages\Zone1\PowerOff.cs" />
+    <Compile Include="Messages\Zone1\PowerOn.cs" />
+    <Compile Include="Messages\Zone1\GetVolume.cs" />
+    <Compile Include="Messages\Zone1\SetVolume.cs" />
+    <Compile Include="Messages\Zone2\GetVolume.cs" />
+    <Compile Include="Messages\Zone2\PowerOff.cs" />
+    <Compile Include="Messages\Zone2\PowerOn.cs" />
+    <Compile Include="Messages\Zone2\SetVolume.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Fallible.cs" />
@@ -57,13 +57,13 @@
     <Compile Include="IscpStream.cs" />
     <Compile Include="IDevice.cs" />
     <Compile Include="Common\PowerState.cs" />
-    <Compile Include="Responses\IParser.cs" />
-    <Compile Include="Responses\IResponse.cs" />
-    <Compile Include="Responses\AbstractParser.cs" />
-    <Compile Include="Responses\Zone1\PowerStateResponse.cs" />
-    <Compile Include="Responses\Zone1\VolumeResponse.cs" />
-    <Compile Include="Responses\Zone2\PowerStateResponse.cs" />
-    <Compile Include="Responses\Zone2\VolumeResponse.cs" />
+    <Compile Include="Messages\IParser.cs" />
+    <Compile Include="Messages\IResponse.cs" />
+    <Compile Include="Messages\AbstractParser.cs" />
+    <Compile Include="Messages\Zone1\PowerStateResponse.cs" />
+    <Compile Include="Messages\Zone1\VolumeResponse.cs" />
+    <Compile Include="Messages\Zone2\PowerStateResponse.cs" />
+    <Compile Include="Messages\Zone2\VolumeResponse.cs" />
     <Compile Include="TxNr\Receiver.cs" />
     <Compile Include="TxNr\Zone.cs" />
     <Compile Include="TxNr\Zone1.cs" />
@@ -99,8 +99,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\Zone3\" />
-    <Folder Include="Responses\Zone3\" />
+    <Folder Include="Messages\Zone3\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

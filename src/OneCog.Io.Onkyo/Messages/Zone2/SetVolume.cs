@@ -1,13 +1,12 @@
-﻿using OneCog.Io.Onkyo.Responses.Zone1;
-using System;
+﻿using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Commands.Zone1
+namespace OneCog.Io.Onkyo.Messages.Zone2
 {
     public class SetVolume : ICommand<byte>
     {
-        private const string CommandStringPattern = "MVL{0:X2}";
+        private const string CommandStringPattern = "ZVL{0:X2}";
         
         private byte _volume;
 

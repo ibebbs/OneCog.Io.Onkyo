@@ -1,13 +1,12 @@
 ﻿using OneCog.Io.Onkyo.Common;
-using OneCog.Io.Onkyo.Responses.Zone2;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Commands.Zone2
+namespace OneCog.Io.Onkyo.Messages.Zone1
 {
     public class PowerOn : ICommand<PowerState>
     {
-        private const string CommandString = "ZPW01";
+        private const string CommandString = "PWR01";
         
         public Task<Fallible<PowerState>> Send(ICommandStream stream)
         {

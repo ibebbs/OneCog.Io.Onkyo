@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace OneCog.Io.Onkyo.Responses.Zone2
+namespace OneCog.Io.Onkyo.Messages.Zone1
 {
     public class PowerStateResponse : IResponse
     {
@@ -28,7 +28,7 @@ namespace OneCog.Io.Onkyo.Responses.Zone2
 
         private const string PowerCommandGroup = "PWR";
         private const string PowerStateGroup = "PWRSTATE";
-        private const string PowerRegex = @"(?<PWR>ZPW(?<PWRSTATE>(00|01)))";
+        private const string PowerRegex = @"(?<PWR>PWR(?<PWRSTATE>(00|01)))";
 
         public string Regex
         {
