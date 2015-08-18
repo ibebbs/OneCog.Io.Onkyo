@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="BitConverter.cs" />
     <Compile Include="CommandStream.cs" />
+    <Compile Include="Devices\Tx.cs" />
     <Compile Include="Messages\ICommand.cs" />
     <Compile Include="Messages\Zone1\PowerOff.cs" />
     <Compile Include="Messages\Zone1\PowerOn.cs" />
@@ -64,11 +65,7 @@
     <Compile Include="Messages\Zone1\VolumeResponse.cs" />
     <Compile Include="Messages\Zone2\PowerStateResponse.cs" />
     <Compile Include="Messages\Zone2\VolumeResponse.cs" />
-    <Compile Include="TxNr\Receiver.cs" />
-    <Compile Include="TxNr\Zone.cs" />
-    <Compile Include="TxNr\Zone1.cs" />
-    <Compile Include="TxNr\Zone2.cs" />
-    <Compile Include="TxNr\Zone3.cs" />
+    <Compile Include="Devices\Receiver.cs" />
     <Compile Include="UnitType.cs" />
     <Compile Include="SharedDisposable.cs" />
     <Compile Include="RefCountDisposable.cs" />
