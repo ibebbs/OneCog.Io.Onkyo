@@ -38,13 +38,20 @@
   <ItemGroup>
     <Compile Include="BitConverter.cs" />
     <Compile Include="CommandStream.cs" />
+    <Compile Include="Common\MuteState.cs" />
     <Compile Include="Devices\Tx.cs" />
     <Compile Include="Messages\ICommand.cs" />
+    <Compile Include="Messages\Zone1\MuteOffCommand.cs" />
+    <Compile Include="Messages\Zone1\MuteOnCommand.cs" />
     <Compile Include="Messages\Zone1\PowerOff.cs" />
     <Compile Include="Messages\Zone1\PowerOn.cs" />
     <Compile Include="Messages\Zone1\GetVolume.cs" />
+    <Compile Include="Messages\Zone1\MuteStateResponse.cs" />
     <Compile Include="Messages\Zone1\SetVolume.cs" />
     <Compile Include="Messages\Zone2\GetVolume.cs" />
+    <Compile Include="Messages\Zone2\MuteOffCommand.cs" />
+    <Compile Include="Messages\Zone2\MuteOnCommand.cs" />
+    <Compile Include="Messages\Zone2\MuteStateResponse.cs" />
     <Compile Include="Messages\Zone2\PowerOff.cs" />
     <Compile Include="Messages\Zone2\PowerOn.cs" />
     <Compile Include="Messages\Zone2\SetVolume.cs" />

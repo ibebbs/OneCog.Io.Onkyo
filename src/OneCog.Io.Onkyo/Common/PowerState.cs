@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace OneCog.Io.Onkyo.Common
 {
-    public enum PowerState : int
+    public enum PowerState : short
     {
         Unknown = -1,
         Off     = 0,
