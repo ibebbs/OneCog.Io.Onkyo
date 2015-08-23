@@ -16,7 +16,7 @@ namespace OneCog.Io.Onkyo.Messages.Zone1
 
     public class VolumeResponseParser : IParser
     {
-        private const string MasterVolumeRegex = @"(?<MVL>MVL(?<MVLVALUE>([0..9,A..F]){2}))";
+        private const string MasterVolumeRegex = @"(?<MVL>MVL(?<MVLVALUE>[0-9,A-F,a-f]{2}))";
         private const string MasterVolumeGroup = "MVL";
         private const string MasterVolumeValueGroup = "MVLVALUE";
 

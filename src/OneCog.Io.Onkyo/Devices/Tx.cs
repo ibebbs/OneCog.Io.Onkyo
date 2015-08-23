@@ -9,7 +9,7 @@ namespace OneCog.Io.Onkyo.Devices
 {
     public static class Tx
     {
-        private static readonly IEnumerable<IParser> AllParsers = new IParser[]
+        internal static readonly IEnumerable<IParser> AllParsers = new IParser[]
         {
             new Messages.Zone1.PowerStateParser(),
             new Messages.Zone1.VolumeResponseParser(),

@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Devices\TxTestFixture.cs" />
     <Compile Include="IscpStreamShould.cs" />
+    <Compile Include="Messages\AbstractParserTestFixture.cs" />
     <Compile Include="PacketFactoryShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
