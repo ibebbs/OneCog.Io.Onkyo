@@ -24,7 +24,7 @@ namespace OneCog.Io.Onkyo.Devices
             return new Receiver(host, port, AllParsers);
         }
 
-        public static IReceiver Nr626(string host, ushort port)
+        public static IReceiver Nr616(string host, ushort port)
         {
             return new Receiver(host, port, AllParsers);
         }

@@ -22,7 +22,7 @@ namespace OneCog.Io.Onkyo.Messages
         {
             _factories = (factories ?? Enumerable.Empty<IParser>()).ToArray();
 
-            string regexPattern = string.Format(@"!({0})", string.Join("|", _factories.Select(factory => factory.Regex)).ToArray());
+            string regexPattern = string.Format(@"(?:{0})", string.Join("|", _factories.Select(factory => factory.Regex)));
 
             _regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
         }
