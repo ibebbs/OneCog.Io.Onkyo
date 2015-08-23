@@ -63,6 +63,7 @@ Target "Package" (fun _ ->
             Tags = tags
             OutputPath = deployDir
             WorkingDir = deployDir
+            SymbolPackage = NugetSymbolPackage.Nuspec
             Version = version
             Dependencies = dependencies
             //DependenciesByFramework = [ { FrameworkVersion = portableTarget; Dependencies = dependencies }; { FrameworkVersion = uapTarget; Dependencies = dependencies } ]
