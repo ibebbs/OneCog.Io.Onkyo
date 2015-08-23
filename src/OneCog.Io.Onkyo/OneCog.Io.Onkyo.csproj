@@ -41,6 +41,7 @@
     <Compile Include="Common\MuteState.cs" />
     <Compile Include="Devices\Tx.cs" />
     <Compile Include="Messages\ICommand.cs" />
+    <Compile Include="Messages\Zone1\GetPowerState.cs" />
     <Compile Include="Messages\Zone1\MuteOffCommand.cs" />
     <Compile Include="Messages\Zone1\MuteOnCommand.cs" />
     <Compile Include="Messages\Zone1\PowerOff.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Messages\Zone1\GetVolume.cs" />
     <Compile Include="Messages\Zone1\MuteStateResponse.cs" />
     <Compile Include="Messages\Zone1\SetVolume.cs" />
+    <Compile Include="Messages\Zone2\GetPowerState.cs" />
     <Compile Include="Messages\Zone2\GetVolume.cs" />
     <Compile Include="Messages\Zone2\MuteOffCommand.cs" />
     <Compile Include="Messages\Zone2\MuteOnCommand.cs" />
