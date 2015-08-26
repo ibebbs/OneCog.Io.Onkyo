@@ -6,6 +6,7 @@ if "%nuget%" == "" (
 )
 
 echo BUILD.BAT - NuGet package restore started.
+%nuget% source Add -Name OneCog -Source https://www.myget.org/F/onecog/api/v2
 %nuget% restore ".\src\OneCog.Io.Onkyo.sln" -OutputDirectory ".\src\packages"
 echo BUILD.BAT - NuGet package restore finished.
 
