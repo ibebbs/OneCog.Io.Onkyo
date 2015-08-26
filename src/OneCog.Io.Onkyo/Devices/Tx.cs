@@ -19,14 +19,14 @@ namespace OneCog.Io.Onkyo.Devices
             new Messages.Zone2.MuteStateParser()
         };
 
-        public static IReceiver Nr929(string host, ushort port)
+        public static IReceiver Nr929(string host, ushort port, TimeSpan commandTimeout)
         {
-            return new Receiver(host, port, AllParsers);
+            return new Receiver(host, port, commandTimeout, AllParsers);
         }
 
-        public static IReceiver Nr616(string host, ushort port)
+        public static IReceiver Nr616(string host, ushort port, TimeSpan commandTimeout)
         {
-            return new Receiver(host, port, AllParsers);
+            return new Receiver(host, port, commandTimeout, AllParsers);
         }
     }
 }

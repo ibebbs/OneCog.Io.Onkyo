@@ -6,6 +6,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBlock Text="Tx-Nr616" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical">
+            <Button x:Name="TurnOn" Content="Turn On" Margin="5" />
+            <Button x:Name="GetVolume" Content="Get Volume" Margin="5" />
+        </StackPanel>
+        <StackPanel Grid.Column="2">
+            <TextBlock Text="{Binding Volume}" />
+        </StackPanel>
     </Grid>
 </UserControl>

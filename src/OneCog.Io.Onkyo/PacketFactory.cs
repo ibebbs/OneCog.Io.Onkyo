@@ -76,7 +76,7 @@ namespace OneCog.Io.Onkyo
         
         public string ExtractBody(IPacket packet)
         {
-            return Encoding.GetString(packet.Data, (int) packet.HeaderSize, (int) packet.DataSize - (int) packet.HeaderSize);
+            return Encoding.GetString(packet.Data, 0, (int)packet.DataSize);
         }
     }
 }

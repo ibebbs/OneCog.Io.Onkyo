@@ -18,9 +18,9 @@ namespace OneCog.Io.Onkyo.Devices
     {
         private readonly ICommandStream _commandStream;
 
-        public Receiver(string host, ushort port, IEnumerable<Messages.IParser> parsers)
+        public Receiver(string host, ushort port, TimeSpan commandTimeout, IEnumerable<Messages.IParser> parsers)
         {
-            _commandStream = new CommandStream(new IscpStream(host, port, UnitType.Receiver), PacketFactory.Default, new AbstractParser(parsers), UnitType.Receiver, TimeSpan.FromMilliseconds(500));
+            _commandStream = new CommandStream(new IscpStream(host, port, UnitType.Receiver), PacketFactory.Default, new AbstractParser(parsers), UnitType.Receiver, commandTimeout);
         }
 
         public Receiver(string host, ushort port, ICommandStream commandStream)
