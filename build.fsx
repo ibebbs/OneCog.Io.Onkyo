@@ -19,8 +19,10 @@ let description = "Open source, portable library from interacting with Onkyo hom
 let portableAssemblies = [ "OneCog.Io.Onkyo.dll"; "OneCog.Io.Onkyo.pdb"; ]
 
 let libDir = "lib"
+let srcDir = "src"
 let portableTarget = "portable-win81+wpa81+net45+uap10.0"
 let uapTarget = "uap"
+let srcTarget = "src"
  
 // Targets
 Target "Clean" (fun _ ->
@@ -44,13 +46,18 @@ Target "Test" (fun _ ->
 
 Target "Package" (fun _ ->
 
+    // Copy to deployment folder
+    CopyWithSubfoldersTo deployDir [ !! "./src/**/*.cs" ]
     portableAssemblies |> List.map(fun a -> buildDir @@ a) |> CopyFiles deployDir  
 
+    // Setup files to include in package
     let portableFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, portableTarget)), None))
     let uapFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, uapTarget)), None))
+    let srcFiles = [ (@"src\**\*.*", Some "src", None) ]
 
     let dependencies = getDependencies "./src/OneCog.Io.Onkyo/packages.config" |> List.filter (fun (name, version) -> name <> "FAKE")
-
+    
+    printfn "Dependencies"
     printfn "%A" dependencies
 
     NuGet (fun p -> 
@@ -66,8 +73,7 @@ Target "Package" (fun _ ->
             SymbolPackage = NugetSymbolPackage.Nuspec
             Version = version
             Dependencies = dependencies
-            //DependenciesByFramework = [ { FrameworkVersion = portableTarget; Dependencies = dependencies }; { FrameworkVersion = uapTarget; Dependencies = dependencies } ]
-            Files = portableFiles @ uapFiles
+            Files = portableFiles @ uapFiles @ srcFiles
             Publish = false }) 
             "./OneCog.Io.Onkyo.nuspec"
 )

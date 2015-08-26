@@ -1,7 +1,7 @@
 @echo Off
 
 echo BUILD.BAT - NuGet package restore started.
-".\src\.nuget\NuGet.exe" restore ".\src\OneCog.Io.Onkyo.sln" -OutputDirectory ".\src\packages"
+NuGet.exe restore ".\src\OneCog.Io.Onkyo.sln" -OutputDirectory ".\src\packages"
 echo BUILD.BAT - NuGet package restore finished.
 
 echo BUILD.BAT - FAKE build started.
