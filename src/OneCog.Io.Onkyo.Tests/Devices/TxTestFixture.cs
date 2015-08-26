@@ -14,7 +14,7 @@ namespace OneCog.Io.Onkyo.Tests.Devices
         [Test]
         public void CanConstructNr616()
         {
-            IReceiver receiver = Tx.Nr616("127.0.0.1", 60128);
+            IReceiver receiver = Tx.Nr616("127.0.0.1", 60128, TimeSpan.FromSeconds(1));
 
             Assert.That(receiver, Is.Not.Null);
         }
@@ -22,7 +22,7 @@ namespace OneCog.Io.Onkyo.Tests.Devices
         [Test]
         public void CanConstructNr929()
         {
-            IReceiver receiver = Tx.Nr929("127.0.0.1", 60128);
+            IReceiver receiver = Tx.Nr929("127.0.0.1", 60128, TimeSpan.FromSeconds(1));
 
             Assert.That(receiver, Is.Not.Null);
         }
