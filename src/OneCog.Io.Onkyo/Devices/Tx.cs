@@ -14,7 +14,8 @@ namespace OneCog.Io.Onkyo.Devices
             new Messages.Zone1.InputSourceResponseParser(),
             new Messages.Zone2.PowerStateParser(),
             new Messages.Zone2.VolumeResponseParser(),
-            new Messages.Zone2.MuteStateParser()
+            new Messages.Zone2.MuteStateParser(),
+            new Messages.Zone2.InputSourceResponseParser()
         };
 
         public static IReceiver Nr929(string host, ushort port, TimeSpan commandTimeout)
