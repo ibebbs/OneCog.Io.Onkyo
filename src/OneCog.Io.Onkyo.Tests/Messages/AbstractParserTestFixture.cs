@@ -50,5 +50,15 @@ namespace OneCog.Io.Onkyo.Tests.Messages
 
             Assert.That(response, Is.Not.Null);
         }
+
+        [Test]
+        public void CanParseInputSourceResponse()
+        {
+            IEnumerable<IResponse> responses = _subject.Parse("!SLI2B");
+
+            InputSourceResponse response = responses.OfType<InputSourceResponse>().SingleOrDefault(vr => string.Equals(vr.InputSource.Name, "NETWORK", StringComparison.CurrentCultureIgnoreCase));
+
+            Assert.That(response, Is.Not.Null);
+        }
     }
 }

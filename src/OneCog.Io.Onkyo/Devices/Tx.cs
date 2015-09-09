@@ -1,9 +1,6 @@
 ﻿using OneCog.Io.Onkyo.Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Devices
 {
@@ -14,6 +11,7 @@ namespace OneCog.Io.Onkyo.Devices
             new Messages.Zone1.PowerStateParser(),
             new Messages.Zone1.VolumeResponseParser(),
             new Messages.Zone1.MuteStateParser(),
+            new Messages.Zone1.InputSourceResponseParser(),
             new Messages.Zone2.PowerStateParser(),
             new Messages.Zone2.VolumeResponseParser(),
             new Messages.Zone2.MuteStateParser()
