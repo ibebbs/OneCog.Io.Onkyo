@@ -57,9 +57,6 @@ Target "Package" (fun _ ->
 
     let dependencies = getDependencies "./src/OneCog.Io.Onkyo/packages.config" |> List.filter (fun (name, version) -> name <> "FAKE")
     
-    printfn "Dependencies"
-    printfn "%A" dependencies
-
     NuGet (fun p -> 
         {p with
             Authors = [ "Ian Bebbington" ]

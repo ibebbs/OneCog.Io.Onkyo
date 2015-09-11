@@ -14,6 +14,7 @@
         <StackPanel Orientation="Vertical">
             <Button x:Name="TurnOn" Content="Turn On" Margin="5" />
             <Button x:Name="GetVolume" Content="Get Volume" Margin="5" />
+            <Button x:Name="SetVolume75" Content="Set Volume to 75" Margin="5" />
         </StackPanel>
         <StackPanel Grid.Column="2">
             <TextBlock Text="{Binding Volume}" />

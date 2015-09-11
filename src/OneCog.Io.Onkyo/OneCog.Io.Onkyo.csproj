@@ -87,11 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OneCog.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OneCog.Net.1.0.0.17\lib\portable-net45+wp8+win81+wpa81\OneCog.Net.dll</HintPath>
+      <HintPath>..\packages\OneCog.Net.1.0.0.18\lib\portable-net45+wp8+win81+wpa81\OneCog.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OneCog.Net.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OneCog.Net.1.0.0.17\lib\portable-net45+wp8+win81+wpa81\OneCog.Net.Common.dll</HintPath>
+      <HintPath>..\packages\OneCog.Net.1.0.0.18\lib\portable-net45+wp8+win81+wpa81\OneCog.Net.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

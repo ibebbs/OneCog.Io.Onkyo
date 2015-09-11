@@ -55,6 +55,16 @@ namespace OneCog.Io.Onkyo.Desktop
             }
         }
 
+        public async Task SetVolume75()
+        {
+            var volume = await _studyAmp.Send<byte>(new Messages.Zone1.SetVolume(75));
+
+            if (volume.Succeeded)
+            {
+                Volume = volume.Value;
+            }
+        }
+
         public override string DisplayName
         {
             get { return "Tx-Nr616"; }
