@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Tests
@@ -20,99 +21,25 @@ namespace OneCog.Io.Onkyo.Tests
         private static readonly byte[] PaddedVersion = new byte[] { Version, 0, 0, 0 };
 
         [Test]
-        public void ConnectToTcpClientWhenConnectIsCalled()
+        public async Task ConnectToTcpClientWhenConnectIsCalled()
         {
             ITcpClient tcpClient = A.Fake<ITcpClient>();
 
             IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
 
-            subject.Connect();
+            await subject.Connect();
 
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => tcpClient.Connect("localhost", 60128, A<CancellationToken>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
-        [Test]
-        public void OnlyConnectToTcpClientOnce()
+        private Task<int> FromStream(byte[] buffer, Stream stream)
         {
-            ITcpClient tcpClient = A.Fake<ITcpClient>();
-
-            IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
-
-            subject.Connect();
-            subject.Connect();
-            subject.Connect();
-
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Test]
-        public void DisconnectTcpClientWhenConnectionIsDisposed()
-        {
-            IDataReader dataReader = A.Fake<IDataReader>();
-            A.CallTo(() => dataReader.Read(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-            IDataWriter dataWriter = A.Fake<IDataWriter>();
-            A.CallTo(() => dataWriter.Write(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-            ITcpClient tcpClient = A.Fake<ITcpClient>();
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).Returns(dataReader);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).Returns(dataWriter);
-
-            IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
-
-            IDisposable connection = subject.Connect();
-
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-
-            A.CallTo(() => dataReader.Dispose()).MustNotHaveHappened();
-            A.CallTo(() => dataWriter.Dispose()).MustNotHaveHappened();
-
-            connection.Dispose();
-
-            A.CallTo(() => dataReader.Dispose()).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => dataWriter.Dispose()).MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Test]
-        public void DisconnectTcpClientWhenLastConnectionIsDisposed()
-        {
-            IDataReader dataReader = A.Fake<IDataReader>();
-            A.CallTo(() => dataReader.Read(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-            IDataWriter dataWriter = A.Fake<IDataWriter>();
-            A.CallTo(() => dataWriter.Write(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-
-            ITcpClient tcpClient = A.Fake<ITcpClient>();
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).Returns(dataReader);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).Returns(dataWriter);
-
-            IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
-
-            IDisposable connection1 = subject.Connect();
-            IDisposable connection2 = subject.Connect();
-
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).MustHaveHappened(Repeated.Exactly.Once);
-
-            connection1.Dispose();
-
-            A.CallTo(() => dataReader.Dispose()).MustNotHaveHappened();
-            A.CallTo(() => dataWriter.Dispose()).MustNotHaveHappened();
-
-            connection2.Dispose();
-
-            A.CallTo(() => dataReader.Dispose()).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => dataWriter.Dispose()).MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        private Task FromStream(byte[] buffer, Stream stream)
-        {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
 
             if (stream.Position < stream.Length)
             {
                 stream.Read(buffer, 0, buffer.Length);
-                tcs.SetResult(null);
+                tcs.SetResult(buffer.Length);
             }
 
             return tcs.Task;
@@ -141,49 +68,39 @@ namespace OneCog.Io.Onkyo.Tests
         }
 
         [Test]
-        public void CorrectlyParseAReceivedPacket()
+        public async Task CorrectlyParseAReceivedPacket()
         {
             Stream source = CreateIscpStream("!1PWR01");
 
-            IDataReader dataReader = A.Fake<IDataReader>();
-            A.CallTo(() => dataReader.Read(A<byte[]>.Ignored)).ReturnsLazily(call => FromStream(call.GetArgument<byte[]>(0), source));
-            IDataWriter dataWriter = A.Fake<IDataWriter>();
-            A.CallTo(() => dataWriter.Write(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-
             ITcpClient tcpClient = A.Fake<ITcpClient>();
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).Returns(dataReader);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).Returns(dataWriter);
+            A.CallTo(() => tcpClient.Read(A<byte[]>.Ignored, A<CancellationToken>.Ignored)).ReturnsLazily(call => FromStream(call.GetArgument<byte[]>(0), source));
+            A.CallTo(() => tcpClient.Write(A<byte[]>.Ignored, A<CancellationToken>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
 
             IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
 
             List<IPacket> packets = new List<IPacket>();
-            subject.Subscribe(packets.Add);
+            subject.Received.Subscribe(packets.Add);
 
-            subject.Connect();
+            await subject.Connect();
 
             Assert.That(packets.Count, Is.EqualTo(1));
         }
 
         [Test]
-        public void CorrectlyParseMultipleReceivedPackets()
+        public async Task CorrectlyParseMultipleReceivedPackets()
         {
             Stream source = CreateIscpStream(new [] { "!1PWR01", "!1PWR02", "!1PWR03" });
 
-            IDataReader dataReader = A.Fake<IDataReader>();
-            A.CallTo(() => dataReader.Read(A<byte[]>.Ignored)).ReturnsLazily(call => FromStream(call.GetArgument<byte[]>(0), source));
-            IDataWriter dataWriter = A.Fake<IDataWriter>();
-            A.CallTo(() => dataWriter.Write(A<byte[]>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
-
             ITcpClient tcpClient = A.Fake<ITcpClient>();
-            A.CallTo(() => tcpClient.GetDataReader("localhost", 60128)).Returns(dataReader);
-            A.CallTo(() => tcpClient.GetDataWriter("localhost", 60128)).Returns(dataWriter);
+            A.CallTo(() => tcpClient.Read(A<byte[]>.Ignored, A<CancellationToken>.Ignored)).ReturnsLazily(call => FromStream(call.GetArgument<byte[]>(0), source));
+            A.CallTo(() => tcpClient.Write(A<byte[]>.Ignored, A<CancellationToken>.Ignored)).Returns(new TaskCompletionSource<object>().Task);
 
             IscpStream subject = new IscpStream("localhost", 60128, UnitType.Receiver, tcpClient);
 
             List<IPacket> packets = new List<IPacket>();
-            subject.Subscribe(packets.Add);
+            subject.Received.Subscribe(packets.Add);
 
-            subject.Connect();
+            await subject.Connect();
 
             Assert.That(packets.Count, Is.EqualTo(3));
         }

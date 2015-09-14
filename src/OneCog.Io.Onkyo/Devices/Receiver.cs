@@ -1,15 +1,13 @@
 ﻿using OneCog.Io.Onkyo.Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Devices
 {
     public interface IReceiver
     {
-        IDisposable Connect();
+        Task<IDisposable> Connect();
 
         Task<Fallible<T>> Send<T>(ICommand<T> command);
     }
@@ -28,7 +26,7 @@ namespace OneCog.Io.Onkyo.Devices
             _commandStream = commandStream;
         }
 
-        public IDisposable Connect()
+        public Task<IDisposable> Connect()
         {
             return _commandStream.Connect();
         }

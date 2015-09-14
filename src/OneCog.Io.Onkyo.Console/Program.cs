@@ -23,17 +23,17 @@ namespace OneCog.Io.Onkyo.Console
                     .Where(command => !string.IsNullOrWhiteSpace(command))
                     .Select(command => PacketFactory.Default.CreatePacket(arguments.Value.UnitType, command))
                     .SubscribeOn(TaskPoolScheduler.Default)
-                    .Subscribe(stream);
+                    .Subscribe(packet => stream.Send(packet));
 
-                stream.Subscribe(packet => Output.WriteLine(Encoding.UTF8.GetString(packet.Data)));
+                stream.Received.Subscribe(packet => Output.WriteLine(Encoding.UTF8.GetString(packet.Data)));
 
                 Output.WriteLine("Connecting...");
 
-                using (stream.Connect())
+                using (stream.Connect().Result)
                 {
                     Output.WriteLine("Connected");
 
-                    stream.Wait();
+                    stream.Received.Wait();
                 }
             }
             else

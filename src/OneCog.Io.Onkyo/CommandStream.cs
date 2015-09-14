@@ -12,7 +12,7 @@ namespace OneCog.Io.Onkyo
 {
     public interface ICommandStream
     {
-        IDisposable Connect();
+        Task<IDisposable> Connect();
 
         Task<Fallible<T>> Send<T>(string command, Func<IObservable<IResponse>, IObservable<T>> responseProjection);
     }
@@ -32,13 +32,13 @@ namespace OneCog.Io.Onkyo
             _unitType = unitType;
             _commandTimeout = commandTimeout;
 
-            _responses = _stream
+            _responses = _stream.Received
                 .Select(_packetFactory.ExtractBody)
                 .SelectMany(parser.Parse)
                 .Publish().RefCount();
         }
 
-        public IDisposable Connect()
+        public Task<IDisposable> Connect()
         {
             return _stream.Connect();
         }

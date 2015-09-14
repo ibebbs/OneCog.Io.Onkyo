@@ -8,30 +8,31 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo
 {
-    public interface IIscpStream : IObservable<IPacket>
+    public interface IIscpStream
     {
-        IDisposable Connect();
+        Task<IDisposable> Connect();
 
         void Send(IPacket packet);
+
+        IObservable<IPacket> Received { get; }
     }
 
-    public class IscpStream : IIscpStream, IObserver<IPacket>
+    public class IscpStream : IIscpStream
     {
         private const string Header = "ISCP";
 
         private readonly string _hostName;
         private readonly ushort _port;
         private readonly UnitType _unitType;
+        private readonly ITcpClient _tcpClient;
 
         private Subject<IPacket> _outbound;
-        private IConnectableObservable<IPacket> _input;
-        private IConnectableObservable<int> _output;
-        private SharedDisposable _subscription;
-        private ITcpClient _tcpClient;
+        private Subject<IPacket> _inbound;
 
         public IscpStream(string hostName, ushort port, UnitType unitType, ITcpClient tcpClient = null)
         {
@@ -39,41 +40,22 @@ namespace OneCog.Io.Onkyo
             _port = port;
             _unitType = unitType;
             _tcpClient = tcpClient ?? new TcpClient();
+
             _outbound = new Subject<IPacket>();
-
-            _input = Observable.Using(ct => _tcpClient.GetDataReader(hostName, port), (reader, ct) => FromDataReader(reader)).Publish();
-            _output = Observable.Using(ct => _tcpClient.GetDataWriter(hostName, port), (writer, ct) => FromDataWriter(writer)).Publish();
-
-            _subscription = new SharedDisposable(
-                () => new CompositeDisposable(
-                    _input.Connect(),
-                    _output.Connect()
-                )
-            );
+            _inbound = new Subject<IPacket>();
         }
 
-        private static async Task<int> WritePacket(IDataWriter dataWriter, byte[] packet)
+        private async Task<int> WritePacket(byte[] packet, CancellationToken cancellationToken)
         {
-            // packet = new byte[] { 73, 83, 67, 80, 0, 0, 0, 16, 0, 0, 0, 16, 1, 0, 0, 0, 33, 49, 77, 86, 76, 81, 83, 84, 78, 13 };
-            byte[] other = new byte[] { 73, 83, 67, 80, 0, 0, 0, 16, 0, 0, 0, 16, 1, 0, 0, 0, 33, 49, 80, 87, 82, 81, 83, 84, 78, 13 };
-            
-            byte[] local = new byte[] { 73, 83, 67, 80, 0, 0, 0, 16, 0, 0, 0, 10, 1, 0, 0, 0, 33, 49, 80, 87, 82, 81, 83, 84, 78, 26 };
-            //byte local = new byte[] { 73, 83, 67, 80, 0, 0, 0, 16, 0, 0, 0, 11, 1, 0, 0, 0, 33, 49, 80, 87, 82, 81, 83, 84, 78, 26, 13 };
-
-            await dataWriter.Write(packet);
+            await _tcpClient.Write(packet, cancellationToken);
             return packet.Length;
         }
 
-        private Task<IObservable<int>> FromDataWriter(IDataWriter dataWriter)
-        {
-            return Task.FromResult(_outbound.Select(packet => packet.Data).SelectMany(value => WritePacket(dataWriter, value)));
-        }
-
-        private static async Task<IObservable<Tuple<UInt32, UInt32, byte, int>>> ReadHeader(IDataReader dataReader)
+        private async Task<IObservable<Tuple<UInt32, UInt32, byte, int>>> ReadHeader(CancellationToken cancellationToken)
         {
             byte[] header = new byte[16];
 
-            await dataReader.Read(header);
+            await _tcpClient.Read(header, cancellationToken);
 
             string start = Encoding.UTF8.GetString(header, 0, 7);
             int offset = start.IndexOf(Header);
@@ -84,7 +66,7 @@ namespace OneCog.Io.Onkyo
             return Observable.Return(Tuple.Create(headerSize, dataSize, version, offset));
         }
 
-        private static async Task<IPacket> ReadData(IDataReader dataReader, Tuple<UInt32, UInt32, byte, int> header)
+        private async Task<IPacket> ReadData(Tuple<UInt32, UInt32, byte, int> header, CancellationToken cancellationToken)
         {
             UInt32 remaining = Convert.ToUInt32(header.Item1 + header.Item2 + header.Item4 - 16);
 
@@ -92,51 +74,46 @@ namespace OneCog.Io.Onkyo
 
             if (remaining > 0)
             {
-                await dataReader.Read(data);
+                await _tcpClient.Read(data, cancellationToken);
             }
 
             return new Packet(header.Item1, header.Item2, header.Item3, data.Skip(header.Item4).ToArray());
         }
 
-        private static Task<IObservable<IPacket>> FromDataReader(IDataReader dataReader)
+        public async Task<IDisposable> Connect()
         {
-            return Task.FromResult(Observable
-                .DeferAsync(ct => ReadHeader(dataReader))
-                .SelectMany(header => ReadData(dataReader, header))
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            IDisposable connection = await _tcpClient.Connect(_hostName, _port, cts.Token);
+
+            IDisposable outbound = _outbound
+                .Select(packet => packet.Data)
+                .SelectMany(value => WritePacket(value, cts.Token))
+                .Subscribe();
+
+            IDisposable inbound = Observable
+                .DeferAsync(ct => ReadHeader(cts.Token))
+                .SelectMany(header => ReadData(header, cts.Token))
                 .Repeat()
-           );
-        }
+                .Subscribe(_inbound);
 
-        void IObserver<IPacket>.OnCompleted()
-        {
-            // Not supported
-        }
-
-        void IObserver<IPacket>.OnError(Exception error)
-        {
-            // Not supported
-        }
-
-        void IObserver<IPacket>.OnNext(IPacket value)
-        {
-            _outbound.OnNext(value);
-        }
-
-        IDisposable IObservable<IPacket>.Subscribe(IObserver<IPacket> observer)
-        {
-            return _input.Subscribe(observer);
-        }
-
-        public IDisposable Connect()
-        {
-            var disposable = _subscription.GetDisposable();
-
-            return disposable;
+            return new CompositeDisposable(
+                new CancellationDisposable(cts),
+                outbound,
+                inbound,
+                connection,
+                cts
+            );
         }
 
         public void Send(IPacket packet)
         {
             _outbound.OnNext(packet);
+        }
+
+        public IObservable<IPacket> Received
+        {
+            get { return _inbound; }
         }
     }
 }
