@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -13,13 +14,9 @@ using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo
 {
-    public interface IIscpStream
+    public interface IIscpStream : ISubject<IPacket>
     {
-        Task<IDisposable> Connect();
-
-        void Send(IPacket packet);
-
-        IObservable<IPacket> Received { get; }
+        Task<IDisposable> Connect();        
     }
 
     public class IscpStream : IIscpStream
@@ -31,8 +28,8 @@ namespace OneCog.Io.Onkyo
         private readonly UnitType _unitType;
         private readonly ITcpClient _tcpClient;
 
-        private Subject<IPacket> _outbound;
-        private Subject<IPacket> _inbound;
+        private readonly Subject<IPacket> _outbound;
+        private readonly Subject<IPacket> _inbound;
 
         public IscpStream(string hostName, ushort port, UnitType unitType, ITcpClient tcpClient = null)
         {
@@ -106,14 +103,24 @@ namespace OneCog.Io.Onkyo
             );
         }
 
-        public void Send(IPacket packet)
+        public void OnCompleted()
+        {
+            // Do nothing
+        }
+
+        public void OnError(Exception error)
+        {
+            // Do nothing
+        }
+
+        public void OnNext(IPacket packet)
         {
             _outbound.OnNext(packet);
         }
 
-        public IObservable<IPacket> Received
+        public IDisposable Subscribe(IObserver<IPacket> observer)
         {
-            get { return _inbound; }
+            return _inbound.Subscribe(observer);
         }
     }
 }

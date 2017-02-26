@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Messages
 {
-    public interface ICommand<T>
+    public interface ICommand
+    {
+        string CommandString { get; }
+    }
+
+    public interface ICommand<T> : ICommand
     {
         Task<Fallible<T>> Send(ICommandStream stream);
     }

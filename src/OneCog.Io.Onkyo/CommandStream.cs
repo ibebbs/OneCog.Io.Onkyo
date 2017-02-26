@@ -32,7 +32,7 @@ namespace OneCog.Io.Onkyo
             _unitType = unitType;
             _commandTimeout = commandTimeout;
 
-            _responses = _stream.Received
+            _responses = _stream
                 .Select(_packetFactory.ExtractBody)
                 .SelectMany(parser.Parse)
                 .Publish().RefCount();
