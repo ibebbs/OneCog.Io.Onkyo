@@ -5,8 +5,6 @@ using OneCog.Io.Onkyo.Messages.Zone1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneCog.Io.Onkyo.Tests.Messages
 {
@@ -15,7 +13,7 @@ namespace OneCog.Io.Onkyo.Tests.Messages
     {
         private AbstractParser _subject;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             _subject = new AbstractParser(Tx.AllParsers);

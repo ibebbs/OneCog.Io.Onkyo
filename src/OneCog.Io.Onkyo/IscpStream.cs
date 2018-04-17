@@ -1,12 +1,8 @@
-﻿using OneCog.Net;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,23 +35,23 @@ namespace OneCog.Io.Onkyo
             _hostName = hostName;
             _port = port;
             _unitType = unitType;
-            _tcpClient = tcpClient ?? new TcpClient();
+            _tcpClient = new ManagedTcpClient(tcpClient);
 
             _outbound = new Subject<IPacket>();
             _inbound = new Subject<IPacket>();
         }
 
-        private async Task<int> WritePacket(byte[] packet, CancellationToken cancellationToken)
+        private async Task<int> WritePacket(INetworkStream stream, byte[] packet, CancellationToken cancellationToken)
         {
-            await _tcpClient.Write(packet, cancellationToken);
+            await stream.WriteAsync(packet, 0, packet.Length, cancellationToken);
             return packet.Length;
         }
 
-        private async Task<IObservable<Tuple<UInt32, UInt32, byte, int>>> ReadHeader(CancellationToken cancellationToken)
+        private async Task<IObservable<Tuple<UInt32, UInt32, byte, int>>> ReadHeader(INetworkStream stream, CancellationToken cancellationToken)
         {
             byte[] header = new byte[16];
 
-            await _tcpClient.Read(header, cancellationToken);
+            await stream.ReadAsync(header, 0, header.Length, cancellationToken);
 
             string start = Encoding.UTF8.GetString(header, 0, 7);
             int offset = start.IndexOf(Header);
@@ -66,7 +62,7 @@ namespace OneCog.Io.Onkyo
             return Observable.Return(Tuple.Create(headerSize, dataSize, version, offset));
         }
 
-        private async Task<IPacket> ReadData(Tuple<UInt32, UInt32, byte, int> header, CancellationToken cancellationToken)
+        private async Task<IPacket> ReadData(INetworkStream stream, Tuple<UInt32, UInt32, byte, int> header, CancellationToken cancellationToken)
         {
             UInt32 remaining = Convert.ToUInt32(header.Item1 + header.Item2 + header.Item4 - 16);
 
@@ -74,7 +70,7 @@ namespace OneCog.Io.Onkyo
 
             if (remaining > 0)
             {
-                await _tcpClient.Read(data, cancellationToken);
+                await stream.ReadAsync(data, 0, data.Length, cancellationToken);
             }
 
             return new Packet(header.Item1, header.Item2, header.Item3, data.Skip(header.Item4).ToArray());
@@ -83,17 +79,19 @@ namespace OneCog.Io.Onkyo
         public async Task<IDisposable> Connect()
         {
             CancellationTokenSource cts = new CancellationTokenSource();
+            
+            await _tcpClient.ConnectAsync(_hostName, _port);
 
-            IDisposable connection = await _tcpClient.Connect(_hostName, _port, cts.Token);
+            INetworkStream stream = _tcpClient.GetStream();
 
             IDisposable outbound = _outbound
                 .Select(packet => packet.Data)
-                .SelectMany(value => WritePacket(value, cts.Token))
+                .SelectMany(value => WritePacket(stream, value, cts.Token))
                 .Subscribe();
 
             IDisposable inbound = Observable
-                .DeferAsync(ct => ReadHeader(cts.Token))
-                .SelectMany(header => ReadData(header, cts.Token))
+                .DeferAsync(ct => ReadHeader(stream, cts.Token))
+                .SelectMany(header => ReadData(stream, header, cts.Token))
                 .Repeat()
                 .Subscribe(_inbound);
 
@@ -101,7 +99,8 @@ namespace OneCog.Io.Onkyo
                 new CancellationDisposable(cts),
                 outbound,
                 inbound,
-                connection,
+                stream,
+                _tcpClient,
                 cts
             );
         }
