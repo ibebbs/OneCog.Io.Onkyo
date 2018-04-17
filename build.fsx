@@ -1,7 +1,8 @@
-#r "./src/packages/FAKE.4.1.3/tools/FakeLib.dll"
+#r "./src/packages/FAKE.4.64.12/tools/FakeLib.dll"
 
+open System.IO
 open Fake
-open System.IO;
+open Fake.Testing
 
 //RestorePackages()
  
@@ -16,12 +17,13 @@ let copyright = "Ian Bebbington, 2014"
 let tags = "Onkyo eISCP ISCP portable"
 let description = "Open source, portable library from interacting with Onkyo home cinema devices via eICSP protocol."
 
+let nunitRunnerPath = "tools/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe"
+
 let portableAssemblies = [ "OneCog.Io.Onkyo.dll"; "OneCog.Io.Onkyo.pdb"; ]
 
 let libDir = "lib"
 let srcDir = "src"
-let portableTarget = "portable-win81+wpa81+net45+uap10.0"
-let uapTarget = "uap"
+let netStandardTarget = "netstandard1.6"
 let srcTarget = "src"
  
 // Targets
@@ -38,10 +40,7 @@ Target "Build" (fun _ ->
 Target "Test" (fun _ ->
     !! (buildDir + "*.Test.dll") 
     ++ (buildDir + "*.Tests.dll")
-      |> NUnit (fun p ->
-          {p with
-             DisableShadowCopy = true;
-             OutputFile = buildDir + "TestResults.xml" })
+      |> NUnit3 (fun p -> {p with ToolPath = nunitRunnerPath })
 )
 
 Target "Package" (fun _ ->
@@ -51,11 +50,10 @@ Target "Package" (fun _ ->
     portableAssemblies |> List.map(fun a -> buildDir @@ a) |> CopyFiles deployDir  
 
     // Setup files to include in package
-    let portableFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, portableTarget)), None))
-    let uapFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, uapTarget)), None))
+    let netStandardFiles = portableAssemblies |> List.map(fun a -> (a, Some(Path.Combine(libDir, netStandardTarget)), None))
     let srcFiles = [ (@"src\**\*.*", Some "src", None) ]
 
-    let dependencies = getDependencies "./src/OneCog.Io.Onkyo/packages.config" |> List.filter (fun (name, version) -> name <> "FAKE")
+    let dependencies = getDependencies "./src/OneCog.Io.Onkyo/OneCog.Io.Onkyo.csproj" |> List.filter (fun (name, version) -> name <> "FAKE")
     
     NuGet (fun p -> 
         {p with
@@ -70,7 +68,7 @@ Target "Package" (fun _ ->
             SymbolPackage = NugetSymbolPackage.Nuspec
             Version = version
             Dependencies = dependencies
-            Files = portableFiles @ uapFiles @ srcFiles
+            Files = netStandardFiles @ srcFiles
             Publish = false }) 
             "./OneCog.Io.Onkyo.nuspec"
 )
@@ -82,7 +80,7 @@ Target "Run" (fun _ ->
 // Dependencies
 "Clean"
   ==> "Build"
-  ==> "Test"
+//  ==> "Test"
   ==> "Package"
   ==> "Run"
  
