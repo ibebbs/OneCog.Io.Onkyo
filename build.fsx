@@ -1,4 +1,4 @@
-#r "./src/packages/FAKE.4.64.12/tools/FakeLib.dll"
+#r "./tools/FAKE.4.64.12/tools/FakeLib.dll"
 
 open System.IO
 open Fake
@@ -73,6 +73,10 @@ Target "Package" (fun _ ->
             "./OneCog.Io.Onkyo.nuspec"
 )
 
+Target "Tidy" (fun _ -> 
+    CleanDirs [ buildDir; deployDir @@ srcDir; "./src/packages" ]
+)
+
 Target "Run" (fun _ -> 
     trace "FAKE build complete"
 )
@@ -82,6 +86,7 @@ Target "Run" (fun _ ->
   ==> "Build"
 //  ==> "Test"
   ==> "Package"
+  ==> "Tidy"
   ==> "Run"
  
 // start build
